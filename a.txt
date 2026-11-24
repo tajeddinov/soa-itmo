@@ -1,0 +1,8 @@
+~/payara7/bin/asadmin list-domains
+~/payara7/bin/asadmin start-domain movie-service
+~/payara7/bin/asadmin stop-domain movie-service
+~/payara7/bin/asadmin restart-domain movie-service
+
+~/payara7/bin/asadmin start-domain oscar-service
+~/payara7/bin/asadmin stop-domain oscar-service
+~/payara7/bin/asadmin restart-domain oscar-service
