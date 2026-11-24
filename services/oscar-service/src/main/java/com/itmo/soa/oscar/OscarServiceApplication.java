@@ -14,8 +14,8 @@ public class OscarServiceApplication extends SpringBootServletInitializer {
         SpringApplication.run(OscarServiceApplication.class, args);
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(OscarServiceApplication.class);
-    }
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+//        return builder.sources(OscarServiceApplication.class);
+//    }
 }
