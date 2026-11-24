@@ -3,7 +3,7 @@
     <option name="OPEN_IN_BROWSER" value="false" />
     <option name="UPDATING_POLICY" value="restart-server" />
     <deployment>
-      <artifact name="Gradle : com.itmo.soa : movie-service-0.0.1-SNAPSHOT.war">
+      <artifact name="Gradle : com.itmo.soa : movie-service-0.0.1-SNAPSHOT.ear">
         <settings />
       </artifact>
     </deployment>
@@ -67,7 +67,7 @@
     <method v="2">
       <option name="Make" enabled="true" />
       <option name="BuildArtifacts" enabled="true">
-        <artifact name="Gradle : com.itmo.soa : movie-service-0.0.1-SNAPSHOT.war" />
+        <artifact name="Gradle : com.itmo.soa : movie-service-0.0.1-SNAPSHOT.ear" />
       </option>
     </method>
   </configuration>

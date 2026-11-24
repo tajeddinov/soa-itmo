@@ -6,7 +6,6 @@ flyway = "13.10.3"
 postgresql = "42.7.14"
 lombok = "1.18.48"
 jakarta-validation = "3.1.1"
-jakarta-data = "1.0.2"
 jakarta-ws-rs = "4.0.0"
 jersey = "4.0.2"
 junit = "6.1.3"
@@ -22,7 +21,6 @@ expressly = "6.0.0"
 jakartaee-api = { module = "jakarta.platform:jakarta.jakartaee-api", version.ref = "jakartaee" }
 jakarta-persistence-api = { module = "jakarta.persistence:jakarta.persistence-api", version.ref = "jakarta-persistence" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
-jakarta-data-api = { module = "jakarta.data:jakarta.data-api", version.ref = "jakarta-data" }
 jakarta-validation-api = { module = "jakarta.validation:jakarta.validation-api", version.ref = "jakarta-validation" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }

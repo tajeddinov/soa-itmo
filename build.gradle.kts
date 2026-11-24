@@ -1,8 +1,12 @@
 plugins {
+    ear
     `jvm-toolchains`
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
 }
+
+group = "com.itmo.soa"
+version = "0.0.1-SNAPSHOT"
 
 val javaVersion = libs.versions.java.get().toInt()
 
@@ -14,6 +18,39 @@ val swaggerUi: Configuration by configurations.creating
 
 dependencies {
     swaggerUi(libs.swagger.ui)
+    deploy(project(path = ":services:movie-web-service", configuration = "webArchive"))
+    deploy(project(":services:movie-ejb-service"))
+    earlib(project(":lib:contract"))
+    earlib(project(":lib:query"))
+    earlib(libs.flyway.core)
+    earlib(libs.flyway.postgresql)
+}
+
+tasks.ear {
+    archiveBaseName = "movie-service"
+    deploymentDescriptor {
+        applicationName = "movie-service"
+        displayName = "movie-service"
+        module("movie-service-ejb.jar", "ejb")
+        webModule("movie-service-web.war", "/")
+    }
+}
+
+tasks.register<Exec>("deploy-movie-service") {
+    description = "Собирает EAR и обновляет movie-service на helios"
+    group = "deployment"
+    val ear = tasks.ear.get().archiveFile.get().asFile
+    dependsOn(tasks.ear)
+    val checkIiop = """payara --port 24048 get 'configs.config.server-config.iiop-service.iiop-listener.*.address' |
+        |awk -F= '/[.]address=/ { count++; if ($2 != "127.0.0.1") invalid = 1 }
+        |END { if (count == 0 || invalid) { print "Bind all Movie IIOP listeners to 127.0.0.1 before deploying the EAR"; exit 1 } }'""".trimMargin()
+    commandLine(
+        "sh", "-c",
+        """printf '%s\n' "$1" | ssh se bash -l -o pipefail &&
+            |scp "$2" se: &&
+            |echo "cd ~ && payara --port 24048 deploy --force=true --name movie-service $3 && rm -- $3" | ssh se bash -l""".trimMargin(),
+        "sh", checkIiop, ear.path, ear.name,
+    )
 }
 
 val swaggerSite = tasks.register<Sync>("swagger-site") {
@@ -90,8 +127,8 @@ tasks.register<Exec>("deploy-frontend") {
 }
 
 subprojects {
-    group = "com.itmo.soa"
-    version = "0.0.1-SNAPSHOT"
+    group = rootProject.group
+    version = rootProject.version
 
     repositories {
         mavenCentral()

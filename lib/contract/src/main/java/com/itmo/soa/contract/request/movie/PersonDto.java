@@ -8,11 +8,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PersonDto {
+public class PersonDto implements Serializable {
 
     @NotNull(message = "Поле обязательно")
     @Pattern(regexp = ".*\\S.*", message = "Имя не может быть пустым")

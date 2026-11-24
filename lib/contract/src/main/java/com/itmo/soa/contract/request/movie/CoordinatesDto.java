@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CoordinatesDto {
+public class CoordinatesDto implements Serializable {
 
     @NotNull(message = "Поле обязательно")
     private Integer x;

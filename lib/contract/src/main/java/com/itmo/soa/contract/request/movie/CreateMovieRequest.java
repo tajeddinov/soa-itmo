@@ -8,10 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateMovieRequest {
+public class CreateMovieRequest implements Serializable {
 
     @NotNull(message = "Поле обязательно")
     @Pattern(regexp = ".*\\S.*", message = "Название не может быть пустым")

@@ -9,13 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateMovieRequest {
+public class UpdateMovieRequest implements Serializable {
 
     @Null(message = "Поле id нельзя изменить")
     private Object id;
@@ -48,5 +49,33 @@ public class UpdateMovieRequest {
     @AssertTrue(message = "Нужно передать хотя бы одно поле")
     public boolean isNotEmpty() {
         return Stream.of(id, creationDate, name, coordinates, oscarsCount, genre, mpaaRating, screenwriter).anyMatch(v -> v != null);
+    }
+
+    // Optional не сериализуется, а PATCH различает пропущенное поле и явный null.
+    private Object writeReplace() {
+        return new SerializedPatch(id, creationDate, name, coordinates, oscarsCount,
+                genre != null, genre == null ? null : genre.orElse(null), mpaaRating,
+                screenwriter != null, screenwriter == null ? null : screenwriter.orElse(null));
+    }
+
+    @AllArgsConstructor
+    private static final class SerializedPatch implements Serializable {
+
+        private final Object id;
+        private final Object creationDate;
+        private final String name;
+        private final CoordinatesDto coordinates;
+        private final Integer oscarsCount;
+        private final boolean genrePresent;
+        private final String genre;
+        private final String mpaaRating;
+        private final boolean screenwriterPresent;
+        private final PersonDto screenwriter;
+
+        private Object readResolve() {
+            return new UpdateMovieRequest(id, creationDate, name, coordinates, oscarsCount,
+                    genrePresent ? Optional.ofNullable(genre) : null, mpaaRating,
+                    screenwriterPresent ? Optional.ofNullable(screenwriter) : null);
+        }
     }
 }
