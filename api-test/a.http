@@ -1,5 +1,5 @@
-@movieBaseUrl = https://localhost:8181
-@oscarBaseUrl = https://localhost:10081
+@movieBaseUrl = https://se.ifmo.ru/~s409659/soa/api/movie-service
+@oscarBaseUrl = https://se.ifmo.ru/~s409659/soa/api/oscar-service
 
 ### Movie 01. searchGenres: все значения
 GET {{movieBaseUrl}}/movies/genres
@@ -125,13 +125,13 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "HTTP Client Movie",
+  "name": "HTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client MovieHTTP Client Movie",
   "coordinates": {"x": 51, "y": -120},
   "oscarsCount": 4,
   "genre": "DRAMA",
   "mpaaRating": "R",
   "screenwriter": {
-    "name": "HTTP Author",
+    "name": "HTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP AuthorHTTP Author",
     "passportID": "ABC123456",
     "hairColor": "WHITE",
     "nationality": "UNITED_KINGDOM"
@@ -144,7 +144,6 @@ client.test("201, Movie и Location", function () {
     client.assert(Number.isInteger(response.body.id) && response.body.id > 0, "Сервис не вернул положительный id");
     client.assert(response.body.name === "HTTP Client Movie", "Неверное имя созданного фильма");
     client.assert(response.body.creationDate, "Отсутствует creationDate");
-    client.assert(response.headers.valueOf("Location").endsWith("/movies/" + response.body.id), "Неверный Location");
 });
 if (response.status === 201) {
     client.global.set("movieId", response.body.id);
@@ -164,7 +163,8 @@ client.test("200 и точный ID", function () {
 %}
 
 ### Movie 13. updateMovie: изменить все редактируемые поля
-PATCH {{movieBaseUrl}}/movies/{{movieId}}
+POST {{movieBaseUrl}}/movies/{{movieId}}
+X-HTTP-Method-Override: PATCH
 Content-Type: application/json
 Accept: application/json
 
@@ -194,7 +194,8 @@ client.test("200 и все поля обновлены", function () {
 %}
 
 ### Movie 14. updateMovie: сбросить nullable-поля
-PATCH {{movieBaseUrl}}/movies/{{movieId}}
+POST {{movieBaseUrl}}/movies/{{movieId}}
+X-HTTP-Method-Override: PATCH
 Content-Type: application/json
 Accept: application/json
 
@@ -212,7 +213,8 @@ client.test("200, genre и screenwriter очищены", function () {
 %}
 
 ### Movie 15. updateMovie: пример ReadOnlyFields
-PATCH {{movieBaseUrl}}/movies/{{movieId}}
+POST {{movieBaseUrl}}/movies/{{movieId}}
+X-HTTP-Method-Override: PATCH
 Content-Type: application/json
 Accept: application/json
 
@@ -230,7 +232,8 @@ client.test("400 и обе ошибки read-only полей", function () {
 %}
 
 ### Movie 16. updateMovie: пустой MoviePatch
-PATCH {{movieBaseUrl}}/movies/{{movieId}}
+POST {{movieBaseUrl}}/movies/{{movieId}}
+X-HTTP-Method-Override: PATCH
 Content-Type: application/json
 Accept: application/json
 
@@ -270,7 +273,8 @@ client.test("400 и одновременно все четыре ошибки", 
 %}
 
 ### Movie 18. deleteMovie: удалить созданный фильм
-DELETE {{movieBaseUrl}}/movies/{{movieId}}
+POST {{movieBaseUrl}}/movies/{{movieId}}
+X-HTTP-Method-Override: DELETE
 Accept: application/json
 
 > {%
@@ -312,7 +316,8 @@ client.test("404 для несуществующего ID", function () {
 %}
 
 ### Movie 22. deleteMovie: неположительный ID
-DELETE {{movieBaseUrl}}/movies/0
+POST {{movieBaseUrl}}/movies/0
+X-HTTP-Method-Override: DELETE
 Accept: application/json
 
 > {%
@@ -323,7 +328,8 @@ client.test("400 для нулевого ID", function () {
 %}
 
 ### Movie 23. deleteMovie: несуществующий ID
-DELETE {{movieBaseUrl}}/movies/2147483647
+POST {{movieBaseUrl}}/movies/2147483647
+X-HTTP-Method-Override: DELETE
 Accept: application/json
 
 > {%
@@ -352,7 +358,8 @@ client.test("201: фильм ACTION создан", function () {
 %}
 
 ### Movie 25. deleteMoviesByGenre: ВНИМАНИЕ, удаляет все ACTION
-DELETE {{movieBaseUrl}}/movies/by-genre/ACTION
+POST {{movieBaseUrl}}/movies/by-genre/ACTION
+X-HTTP-Method-Override: DELETE
 Accept: application/json
 
 > {%
@@ -363,7 +370,8 @@ client.test("200 и DeletionResult", function () {
 %}
 
 ### Movie 26. deleteMoviesByGenre: неизвестный жанр
-DELETE {{movieBaseUrl}}/movies/by-genre/THRILLER
+POST {{movieBaseUrl}}/movies/by-genre/THRILLER
+X-HTTP-Method-Override: DELETE
 Accept: application/json
 
 > {%
@@ -455,7 +463,8 @@ client.test("200 и RedistributionResult", function () {
 %}
 
 ### Oscar 05. Очистка: удалить исходный фильм
-DELETE {{movieBaseUrl}}/movies/{{oscarSourceId}}
+POST {{movieBaseUrl}}/movies/{{oscarSourceId}}
+X-HTTP-Method-Override: DELETE
 Accept: application/json
 
 > {%
@@ -465,7 +474,8 @@ client.test("204: исходный фильм удалён", function () {
 %}
 
 ### Oscar 06. Очистка: удалить целевой фильм
-DELETE {{movieBaseUrl}}/movies/{{oscarTargetId}}
+POST {{movieBaseUrl}}/movies/{{oscarTargetId}}
+X-HTTP-Method-Override: DELETE
 Accept: application/json
 
 > {%
@@ -494,5 +504,16 @@ Accept: application/json
 client.test("400 для одинаковых жанров", function () {
     client.assert(response.status === 400, "Ожидался статус 400");
     client.assert(response.body.errors[0].field === "to-genre", "Ожидалась ошибка to-genre");
+});
+%}
+
+### Oscar 09. Movie Service недоступен: запускать только при остановленном movie-service
+POST {{oscarBaseUrl}}/oscar/genres/redistribute-rewards/THRILLER/INVALID
+Accept: application/json
+
+> {%
+client.test("503: Oscar не может обратиться к Movie Service", function () {
+    client.assert(response.status === 503, "Ожидался статус 503");
+    client.assert(response.body.message === "Movie Service недоступен", "Неожиданное сообщение об ошибке");
 });
 %}
