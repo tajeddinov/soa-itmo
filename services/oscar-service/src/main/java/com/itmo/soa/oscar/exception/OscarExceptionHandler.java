@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @RestControllerAdvice
 public class OscarExceptionHandler {
@@ -51,6 +52,6 @@ public class OscarExceptionHandler {
     }
 
     private Instant now() {
-        return Instant.now();
+        return Instant.now().truncatedTo(ChronoUnit.SECONDS);
     }
 }

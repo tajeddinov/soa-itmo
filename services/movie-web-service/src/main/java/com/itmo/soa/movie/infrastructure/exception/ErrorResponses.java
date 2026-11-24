@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 final class ErrorResponses {
@@ -17,14 +18,14 @@ final class ErrorResponses {
     static Response error(Response.StatusType status, String message) {
         return Response.status(status)
                 .type(MediaType.APPLICATION_JSON_TYPE)
-                .entity(new ErrorResponse(message, Instant.now()))
+                .entity(new ErrorResponse(message, Instant.now().truncatedTo(ChronoUnit.SECONDS)))
                 .build();
     }
 
     static Response validation(String message, List<FieldError> errors) {
         return Response.status(Response.Status.BAD_REQUEST)
                 .type(MediaType.APPLICATION_JSON_TYPE)
-                .entity(new ValidationErrorResponse(message, Instant.now(), errors))
+                .entity(new ValidationErrorResponse(message, Instant.now().truncatedTo(ChronoUnit.SECONDS), errors))
                 .build();
     }
 }
